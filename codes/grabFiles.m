@@ -28,6 +28,9 @@ files.theGeometry = which(tlControl.files.Geometry((length(talapas_dir_cluster)+
 file_type  = 'tlPert';
 file       = append('/',file_type, '*.mat');
 tlPert_dir = dir(append(glob_dir, file));
-files.thePert     = append(tlPert_dir(iteration_no).folder, '/', tlPert_dir(iteration_no).name);
+files.thePert        = append(tlPert_dir(iteration_no).folder, '/', tlPert_dir(iteration_no).name);
+
+% srOutput
+files.srOutputFolder = append(talapas_dir_home, 'srOutput/', inv_folder_name, '/');
 
 end

@@ -2,18 +2,23 @@ close all, clc, clear
 
 %% Inputs
 
-inv_folder_name  = '250408_131744';
+inv_folder_name  = '250412_212425';
 iteration_no     = 7;
 dws_lwBound      = 5;
 
 % switches to activate & modulate analysis
-hangModel = 1;
-plotModel = 0;
-smIndex   = 1;
-    dp_intv_SI = 1;
-        SI_pick = 1;
-            dsi = .9;
 
+% hang the srModel from elevation to plot the model w.r.t. MSL
+hangModel      = 0;
+% plot the map and x sections of the model
+plotInvModel   = 0;
+% plot the inverted interface result
+plotInvInt     = 1;
+    pt         = 10;        % point distance for performing nearest neighborhood
+% calculate the similarity to an average depth profile of a certain region 
+smIndex        = 0;
+    dp_intv_SI = 1;
+    SI_pick    = 1; dsi = .9;
 
 
 %% Calculation
@@ -27,6 +32,8 @@ cd ..
 outDir_plot_mapSec = [pwd, '/outputs/plots/map_sections/'];
 outDir_plot_xSecLn = [pwd, '/outputs/plots/x_sections@lons/'];
 outDir_plot_xSecLt = [pwd, '/outputs/plots/x_sections@lats/'];
+outDir_plot_intInv = [pwd, '/outputs/plots/interfaceInversion/'];
+outDir_data_intInv = [pwd, '/outputs/data/interfaceInversion/'];
 outDir_plot_smInd  = [pwd, '/outputs/plots/similarityIndex/'];
 outDir_plot_SImap  = [pwd, '/outputs/plots/similarityIndex/SI_map/'];
 outDir_plot_SIiso  = [pwd, '/outputs/plots/similarityIndex/isoSm_map/'];
@@ -70,7 +77,7 @@ end
 
 %% plot model
 % 
-if plotModel == 1
+if plotInvModel == 1
     
     disp('Plotting the model ...')
     [CA, TV, TL] = custom_color(1.5, max(model_hanged(:)), 11, 'thermal-2');
@@ -97,6 +104,14 @@ if plotModel == 1
     end
 
 end
+
+if plotInvInt == 1
+
+    disp('Plotting the interface inversion result ...')
+    run('plot_interfaceInversion.m')
+
+end
+
 
 %% Similarity Index
 
