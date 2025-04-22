@@ -133,6 +133,8 @@ for i = 1:length(dp_sm)
         xlim([min(inv.srModel.LON(:)) max(inv.srModel.LON(:))])
         ylim([min(inv.srModel.LAT(:)) max(inv.srModel.LAT(:))])
 
+        set(gca, 'FontSize', 16)
+        
         title(append('at ', string(dp), ' km elv of ', string(dsi), ' SI',' [Pick then Press enter]'))
 
         [xSI,ySI] = ginput();
@@ -147,18 +149,23 @@ for i = 1:length(dp_sm)
         end
 
         title(append('at ', string(dp), ' km elv of ', string(dsi), ' SI'))
-        set(gca, 'FontSize', 16)
+        
         saveas(gcf, append(outDir_plot_SIiso, 'mapSec', string(i), '.png'))
         close all
-
 
     end
 
 end
 
+fileID = fopen(append(outDir_data_SIiso,'isoSI_', string(dsi), '_str.txt'),'w');
 
+fprintf(fileID, '%12.5s %12.5s %12.5s\n', 'X', 'Y', 'Z');
 
+for i = 1:length(x_str)
+    fprintf(fileID, '%12.5f %12.5f %12.5f\n', x_str(i), y_str(i), z_str(i));
+end
 
+fclose(fileID)
 
 
 

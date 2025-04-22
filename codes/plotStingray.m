@@ -30,6 +30,7 @@ outDir_plot_xSecLt = [pwd, '/outputs/plots/x_sections@lats/'];
 outDir_plot_smInd  = [pwd, '/outputs/plots/similarityIndex/'];
 outDir_plot_SImap  = [pwd, '/outputs/plots/similarityIndex/SI_map/'];
 outDir_plot_SIiso  = [pwd, '/outputs/plots/similarityIndex/isoSm_map/'];
+outDir_data_SIiso  = [pwd, '/outputs/plots/similarityIndex/isoSI/'];
 
 
 cd(scriptDir)
