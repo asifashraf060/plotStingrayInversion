@@ -90,6 +90,8 @@ for i = 1:length(Vp_woSlab)
 
 s_idx  = rescale((-1.* (s_idx-max(max(s_idx)))), 0, 1);
 
+%s_idx_filt = imgaussfilt(s_idx, .2);
+
 s2_idx(i,:,:) = s_idx;
 
 end
@@ -117,7 +119,7 @@ for i = 1:length(dp_sm)
 
     if SI_pick == 1
         
-        SI_map(find(SI_map<(dsi-.05))) = nan; SI_map(find(SI_map>(dsi+.05))) = nan;
+        SI_map(find(SI_map<(dsi-.05))) = nan; %SI_map(find(SI_map>(dsi+.05))) = nan;
         
         figure('Position', [10 10 900 600])
         [C,h] = contourf(inv.srModel.LON, inv.srModel.LAT, SI_map, [0:0.1:1]);
@@ -128,8 +130,7 @@ for i = 1:length(dp_sm)
         axis equal
 
         hold on
-        s1  = shaperead('/Users/asifashraf/Documents/Casc_Exp_Files/shapefiles/Siletz_terrane.shp');
-        mapshow(s1, 'FaceAlpha',0.01, 'LineWidth',4, 'EdgeColor', 'y', 'LineStyle', '--')
+        mapshow(S, 'FaceAlpha',0.01, 'LineWidth',4, 'EdgeColor', 'y', 'LineStyle', '--')
         xlim([min(inv.srModel.LON(:)) max(inv.srModel.LON(:))])
         ylim([min(inv.srModel.LAT(:)) max(inv.srModel.LAT(:))])
 
@@ -137,16 +138,16 @@ for i = 1:length(dp_sm)
         
         title(append('at ', string(dp), ' km elv of ', string(dsi), ' SI',' [Pick then Press enter]'))
 
-        [xSI,ySI] = ginput();
-        dpSI = zeros(length(xSI), 1) + dp;
-
-        if ~isempty(xSI)
-            hold on
-            plot(xSI, ySI, '-b')
-            x_str = vertcat(x_str, xSI); 
-            y_str = vertcat(y_str, ySI); 
-            z_str = vertcat(z_str, dpSI);
-        end
+%         [xSI,ySI] = ginput();
+%         dpSI = zeros(length(xSI), 1) + dp;
+% 
+%         if ~isempty(xSI)
+%             hold on
+%             plot(xSI, ySI, '-b')
+%             x_str = vertcat(x_str, xSI); 
+%             y_str = vertcat(y_str, ySI); 
+%             z_str = vertcat(z_str, dpSI);
+%         end
 
         title(append('at ', string(dp), ' km elv of ', string(dsi), ' SI'))
         
@@ -157,21 +158,58 @@ for i = 1:length(dp_sm)
 
 end
 
-fileID = fopen(append(outDir_data_SIiso,'isoSI_', string(dsi), '_str.txt'),'w');
-
-fprintf(fileID, '%12.5s %12.5s %12.5s\n', 'X', 'Y', 'Z');
-
-for i = 1:length(x_str)
-    fprintf(fileID, '%12.5f %12.5f %12.5f\n', x_str(i), y_str(i), z_str(i));
-end
-
-fclose(fileID)
-
-
-
-
-
-
-
-
-
+% fileID = fopen(append(outDir_data_SIiso,'isoSI_', string(dsi), '_str.txt'),'w');
+% 
+% fileID = fopen(append('/Users/asifashraf/Documents/code_repo/plotStingrayInversion/outputs/data/similarityIndex/isoSI/iso_sltz_westBnd.txt'), 'w')
+% 
+% fprintf(fileID, '%12.5s %12.5s %12.5s\n', 'X', 'Y', 'Z');
+% 
+% for i = 1:length(x_str)
+%     fprintf(fileID, '%12.5f %12.5f %12.5f\n', x_str(i), y_str(i), z_str(i));
+% end
+% 
+% fclose(fileID)
+% 
+% 
+% ln_ar = min(x_str):.01:max(x_str);
+% lt_ar = min(y_str):.01:max(y_str);
+% 
+% [lnAr_g, ltAr_g] = meshgrid(ln_ar, lt_ar);
+% 
+% f = scatteredInterpolant(x_str, y_str, z_str);
+% 
+% z_str_interp = f(lnAr_g, ltAr_g);
+% 
+% z_str_interp = imgaussfilt(z_str_interp, 2);
+% 
+% % MASK WITH NANS
+% shp = alphaShape(x_str, y_str);
+% insideIdx  = inShape(shp, lnAr_g(:), ltAr_g(:));
+% insideIdx  = reshape(insideIdx, size(lnAr_g));
+% z_str_interp(~insideIdx) = NaN;
+% 
+% z_str_interp(z_str_interp<-7) = nan;
+% 
+% figure(11), clf
+% surf(lnAr_g, ltAr_g, z_str_interp)
+% colormap(jet)
+% colorbar
+% hold on
+% plot(S.X, S.Y, '-k')
+% xlim([-125 -123.5])
+% ylim([42.7 44.2])
+% 
+% 
+% 
+% figure(12), clf
+% plot3(x_str, y_str, z_str, 'or')
+% grid on
+% 
+% 
+% 
+% 
+% 
+% 
+% 
+% 
+% 

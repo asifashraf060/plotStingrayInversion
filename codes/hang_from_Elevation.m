@@ -1,4 +1,6 @@
-function [M_interp_3D, dp_interp] = hang_from_Elevation(srModel, dws_modelSpace, dws_lwBound, incrmnt)
+function [M_interp_3D, dp_interp] = hang_from_Elevation(srModel, dws_mask, dws_modelSpace, dws_lwBound, incrmnt)
+
+% function that hangs the entire velocity model from topography
 
     upEnd = round(max(srModel.elevation(:))) + 2;
     lwEnd = round(min(srModel.zg) + min(min(srModel.elevation))) - 2;
@@ -6,7 +8,7 @@ function [M_interp_3D, dp_interp] = hang_from_Elevation(srModel, dws_modelSpace,
     dp_interp = flip(lwEnd:incrmnt:upEnd);
         
     M_interp_3D = [];
-    for i = 1:length(srModel.yg) % looping through yLine
+    for i = 1:length(srModel.yg)     % looping through yLine
      
         M_2D   = squeeze(srModel.P.u(:,i,:));
         E_1D   = squeeze(srModel.elevation(:,i));
@@ -32,6 +34,7 @@ function [M_interp_3D, dp_interp] = hang_from_Elevation(srModel, dws_modelSpace,
                                         (zg_elv)); % all the velocity depth points
     
                 M_1D_cat   = horzcat(0, 0, 0, 0, M_1D);
+                dws1D_cat  = horzcat(0, 0, 0, 0, dws_1D);
     
             else % for 1-D profiles over the continent
                 
@@ -41,11 +44,16 @@ function [M_interp_3D, dp_interp] = hang_from_Elevation(srModel, dws_modelSpace,
                                         zg_elv); % all the velocity depth points
     
                 M_1D_cat   = horzcat(0, 0, 0, M_1D);
+                dws1D_cat  = horzcat(0, 0, 0, dws_1D);
+
             end
                 
             M_interp = interp1(zg_elv_cat, M_1D_cat', dp_interp');
-    
-            M_interp(find(dws_1D<dws_lwBound)) = nan;
+            d_interp = interp1(zg_elv_cat, dws1D_cat', dp_interp');
+
+            if dws_mask == 1 % mask using dws cutoff
+                M_interp(find(d_interp<dws_lwBound)) = nan;
+            end
     
             M_interp_2D(j,:) = M_interp;
         end

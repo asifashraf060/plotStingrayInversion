@@ -1,0 +1,56 @@
+% dws related calculation
+
+[PertX, PertY, PertZ]    = meshgrid(tlPert.U.P.y, tlPert.U.P.x, tlPert.U.P.z);
+[ModelX, ModelY, ModelZ] = meshgrid(inv.srModel.yg, inv.srModel.xg, inv.srModel.zg);
+dws_modelSpace           = interp3(PertX, PertY, PertZ, tlPert.U.P.dws, ModelX, ModelY, ModelZ);
+
+h = size(dws_modelSpace);
+dws = [];
+for i = 1:h(2)
+
+    dws_2D = dws_modelSpace(:,i,:);
+
+    dws_1D = [];
+    for j = 1:h(1)
+        
+        dws_1D(j) = sum(dws_2D(j,:));
+
+    end
+
+    dws(:,i) = dws_1D;
+
+end
+
+
+% to set the x-y limit for plotting
+% calculating when dws threshold first appears in every direction
+
+dws_rows = [];
+for i = 1:h(1)
+    dwsr = dws(i,:);
+    if ~isempty(find(dwsr>5))
+        dws_rows = vertcat(dws_rows, i);
+    end
+
+end
+r_left = min(dws_rows); r_right = max(dws_rows); 
+
+dws_cols = [];
+for i = 1:h(2)
+    dwsr = dws(:,i);
+    if ~isempty(find(dwsr>5))
+        dws_cols = vertcat(dws_cols, i);
+    end
+
+end
+c_top = min(dws_cols); c_bot = max(dws_cols); 
+
+ln_limits = [ln(r_left) ln(r_right)];
+
+ln_min = min(ln_limits) - .1;
+ln_max = max(ln_limits) + .1;
+
+lt_limits = [lt(c_top) lt(c_bot)];
+
+lt_min = min(lt_limits) - .1;
+lt_max = max(lt_limits) + .1;

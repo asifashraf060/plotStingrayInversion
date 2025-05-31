@@ -148,7 +148,7 @@ int_interp(ind) = int.srModel.interface(1).elevation(ind);
 %% Write the masked interface in a text file
 ind = find(~isnan(int_interp));
 
-int_interp_op = int_interp(ind);
+int_interp_op = inv_interp(ind);
 int_x_op      = inv.srModel.interface(1).X(ind);
 int_y_op      = inv.srModel.interface(1).Y(ind);
 
